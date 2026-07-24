@@ -6,6 +6,8 @@ namespace OrderHub.Web.Controllers;
 
 public class ProductsController : Controller
 {
+    private const int PageSize = 20;
+
     private readonly IProductService _productService;
 
     public ProductsController(IProductService productService)
@@ -30,6 +32,30 @@ public class ProductsController : Controller
         };
 
         return View(vm);
+    }
+
+    public async Task<IActionResult> LowStock(LowStockViewModel filter, int page = 1)
+    {
+        if (!ModelState.IsValid)
+        {
+            filter.Products = Array.Empty<LowStockRowViewModel>();
+            return View(filter);
+        }
+
+        var result = await _productService.GetLowStockAlertsAsync(page, PageSize, filter.Threshold);
+
+        filter.Page = result.Page;
+        filter.TotalCount = result.TotalCount;
+        filter.TotalPages = result.TotalPages;
+        filter.Products = result.Items.Select(r => new LowStockRowViewModel
+        {
+            Sku = r.Product.Sku,
+            Name = r.Product.Name,
+            StockQuantity = r.Product.StockQuantity,
+            UnitsSoldLast30Days = r.UnitsSoldLast30Days
+        }).ToList();
+
+        return View(filter);
     }
 }
 

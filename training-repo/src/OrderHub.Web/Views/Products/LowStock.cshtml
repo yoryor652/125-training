@@ -1,0 +1,73 @@
+@model LowStockViewModel
+@{
+    ViewData["Title"] = "低庫存警示";
+}
+
+<h1 class="h3 mb-3">低庫存警示</h1>
+
+<form asp-action="LowStock" method="get" class="row g-2 mb-3 align-items-start">
+    <div class="col-auto">
+        <input asp-for="Threshold" type="number" min="1" class="form-control" style="width: 120px" />
+        <span asp-validation-for="Threshold" class="text-danger"></span>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">套用</button>
+    </div>
+</form>
+
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>SKU</th>
+            <th>名稱</th>
+            <th class="text-end">現有庫存</th>
+            <th class="text-end">近 30 天售出數量</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Products.Count == 0)
+        {
+            <tr>
+                <td colspan="4" class="text-center text-muted py-4">沒有符合條件的低庫存商品</td>
+            </tr>
+        }
+        @foreach (var product in Model.Products)
+        {
+            <tr>
+                <td>@product.Sku</td>
+                <td>@product.Name</td>
+                <td class="text-end">@product.StockQuantity</td>
+                <td class="text-end">@product.UnitsSoldLast30Days</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalPages > 0)
+{
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="text-muted">
+            共 @Model.TotalCount 筆，第 @Model.Page / @Model.TotalPages 頁
+        </div>
+        <nav aria-label="分頁">
+            <ul class="pagination mb-0">
+                <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="LowStock" asp-route-page="@(Model.Page - 1)" asp-route-Threshold="@Model.Threshold">上一頁</a>
+                </li>
+                @for (var p = 1; p <= Model.TotalPages; p++)
+                {
+                    <li class="page-item @(p == Model.Page ? "active" : "")">
+                        <a class="page-link" asp-action="LowStock" asp-route-page="@p" asp-route-Threshold="@Model.Threshold">@p</a>
+                    </li>
+                }
+                <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="LowStock" asp-route-page="@(Model.Page + 1)" asp-route-Threshold="@Model.Threshold">下一頁</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
