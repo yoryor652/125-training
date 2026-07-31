@@ -124,4 +124,6 @@ Activity 2 -  練習 3
 Activity 2 -  練習 4
 全部執行成功並和expected result 相同
 
+Activity 2 -  練習 5
 
+Tool 是	agent 可以呼叫的動作， Resource 是背景資料，由 client 決定何時放進 context，prompty 則是寫好的範本，像 slash command 一樣觸發
