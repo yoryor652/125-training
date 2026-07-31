@@ -120,3 +120,8 @@ Activity 2 -  練習 3
 
 差異在於沒有mcp的話, agent 自己寫 SQL 直接查資料庫，取得資料 （比較慢），有 mcp的話會 呼叫 low_stock 工具，工具內部呼叫系統既有的 ProductRepository 邏輯查詢。
 核心差異是沒有 MCP時，agent 是自己臨時拼湊查詢邏輯，有 MCP 時 答案保證跟系統其他地方（如 /Products 頁面）用的是同一套邏輯，不會兩邊對不上。
+
+Activity 2 -  練習 4
+全部執行成功並和expected result 相同
+
+
